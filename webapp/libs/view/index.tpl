@@ -250,6 +250,7 @@
                {/if}
            {/foreach}
            </ul>
+           <ul class="pagination"></ul>
           </div>
          </div>
       </div>
@@ -413,15 +414,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
     <script src="/list.js"></script>
+    <script src="/list.pagination.js"></script>
 
 
       <script type="text/javascript">
 {literal}
 
       var options = {
-          valueNames: [ 'title']
-      };
-
+          valueNames: [ 'title'],
+      page: 20,
+      plugins: [
+        ListPagination({})
+      ]
+    };
       var occupationList = new List('occupations', options);
 {/literal}
 
