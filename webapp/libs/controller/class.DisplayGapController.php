@@ -52,6 +52,9 @@ class DisplayGapController extends Controller {
                 $this->addToView('phrasing', '');
             }
             $this->addToView('year', date('Y'));
+
+            $occupations_array = $occup_gap_dao->getAllOccupationsCategorized(2015);
+            $this->addToView('occupations_array', $occupations_array);
         }
         return $this->generateView();
     }

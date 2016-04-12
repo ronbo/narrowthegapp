@@ -150,18 +150,26 @@
         font-weight:bold;
         font-size:125%;
         margin-top:10px;
+        list-style: none;
+        list-style-type: none;
       }
       .cat2 {
         margin-left:5px;
         font-weight:bold;
         font-size:110%;
         margin-top:5px;
+        list-style: none;
+        list-style-type: none;
       }
       .cat3 {
         margin-left:10px;
+        list-style: none;
+        list-style-type: none;
       }
       .jobtitle {
         margin-left:15px;
+        list-style: none;
+        list-style-type: none;
       }
       .fb_iframe_widget span {
         vertical-align: baseline !important;
@@ -179,6 +187,7 @@
     <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-touch-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-touch-icon-114x114.png">
     <script type="text/javascript">var _sf_startpt=(new Date()).getTime()</script>
+
   </head>
 
   <body>
@@ -198,7 +207,7 @@
         </div>
         <div class="col-md-9">
           <div class="input-group" id="prefetch">
-              <input class="typeahead search form-control" type="text" placeholder="{if $smarty.get.slug eq 'total-full-time-wage-and-salary-workers'}What's your occupation?{else}Check another occupation{/if}">
+
           </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
       </div>
@@ -212,6 +221,37 @@
         <span class="fb-share-button" data-href="{$permalink}" data-layout="button"></span>
         <br>
         <h6>Wage gap calculated from 2015 median weekly earnings of full-time salary workers in the United States as per the <a href="http://www.bls.gov/cps/cpsaat39.htm">U.S. Bureau of Labor Statistics</a>.</h6>
+      </div>
+
+      <div class="row" style="background-color:#333">
+
+        <div class="span4">
+
+          <div id="occupations">
+          <input class="search form-control" type="text" placeholder="What's your occupation?">
+           <ul class="list">
+           {foreach from=$occupations_array item=occ}
+               {if $occ.primary_category}
+                {assign var='class' value='cat1'}
+                {assign var='display_title' value=$occ.primary_category}
+               {elseif $occ.secondary_category}
+                {assign var='class' value='cat2'}
+                {assign var='display_title' value=$occ.secondary_category}
+               {elseif $occ.tertiary_category}
+                {assign var='class' value='cat3'}
+                {assign var='display_title' value=$occ.tertiary_category}
+               {elseif $occ.job_title}
+                {assign var='class' value='jobtitle'}
+                {assign var='display_title' value=$occ.job_title}
+               {/if}
+
+               {if $occ.primary_category neq 'Total, full-time wage and salary workers'}
+                  <li class="{$class}"><p class="title"><a href="/gap/{$occ.slug}">{$display_title}</a></p></li>
+               {/if}
+           {/foreach}
+           </ul>
+          </div>
+         </div>
       </div>
 
       <div class="row">
@@ -371,35 +411,18 @@
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="/extlibs/typeahead.bundle.js"></script>
-    <script src="/extlibs/handlebars-v3.0.1.js"></script>
+
+    <script src="/list.js"></script>
+
 
       <script type="text/javascript">
 {literal}
-      var occupations = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('occupation_name'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: '/gaps/'
-      });
 
-      occupations.initialize();
+      var options = {
+          valueNames: [ 'title']
+      };
 
-      $('#prefetch .typeahead').typeahead(null, {
-        name: 'occupation-gaps',
-        displayKey: 'occupation_name',
-        source: occupations.ttAdapter(),
-        templates: {
-          empty: [
-            '<div class="empty-message">',
-            'No occupations match',
-            '</div>'
-          ].join('\n'),
-          suggestion: Handlebars.compile('<a href="/gap/{{slug}}"><div class="occupation-result">{{occupation_name}}</div></a>')
-        }
-      }).on('typeahead:selected', function (e, suggestion, data) {
-          document.location = '/gap/' + suggestion.slug;
-      });
-
+      var occupationList = new List('occupations', options);
 {/literal}
 
     </script>

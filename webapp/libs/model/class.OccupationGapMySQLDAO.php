@@ -100,7 +100,7 @@ class OccupationGapMySQLDAO extends PDODAO {
     }
 
     /**
-     * Get all occupations
+     * Get all occupations.
      * @param int $year
      * @return arr List of occupations with pay gap information
      */
@@ -116,7 +116,22 @@ class OccupationGapMySQLDAO extends PDODAO {
               ''))))
 AS occupation_name, year FROM ";
         $q .= " #prefix#occupation_gap WHERE year = :year;";
-         $vars = array(
+        $vars = array(
+            ':year'=>$year
+        );
+        $ps = $this->execute($q, $vars);
+        $rows = $this->getDataRowsAsArrays($ps);
+        return $rows;
+    }
+
+    /**
+     * Get all occupations with categories.
+     * @return arr List of occupations with pay gap information
+     */
+    public function getAllOccupationsCategorized($year) {
+        $q  = "SELECT id, slug, primary_category, secondary_category, tertiary_category, job_title FROM ";
+        $q .= " #prefix#occupation_gap WHERE year = :year;";
+        $vars = array(
             ':year'=>$year
         );
         $ps = $this->execute($q, $vars);
